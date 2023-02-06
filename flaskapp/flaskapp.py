@@ -1,6 +1,6 @@
 import sqlite3
 
-from flask import Flask, request, g, render_template, url_for, flash, redirect, json
+from flask import Flask, request, g, render_template, url_for, flash, redirect, json, send_file
 from collections import Counter
 app = Flask(__name__)
 
@@ -158,6 +158,22 @@ def findUserResult():
         htmlStr = '<br>'.join(str(row) for row in rows)
     htmlStr = htmlStr + '<br><br><a href=\"/\"><button>Back Home</button></a>'
     return htmlStr
+
+@app.route("/extraCredit/")
+def extraCredit():
+    wordCount = 0
+    with app.open_resource('Limerick.txt') as f:
+        data = f.read()
+        lines = data.split()
+        wordCount += len(lines)
+    htmlStr = 'Limerick.txt Word Count: ' + str(wordCount)
+    htmlStr = htmlStr + '<br><br><a href=\"/downloadLimerick\"><button>Download Limerick.txt</button></a>'
+    htmlStr = htmlStr + '<br><br><a href=\"/\"><button>Back Home</button></a>'
+    return htmlStr
+
+@app.route("/downloadLimerick/")
+def downloadLimerick():
+    return send_file('Limerick.txt', as_attachment=True)
 
 if __name__ == '__main__':
   app.run(debug=True)
